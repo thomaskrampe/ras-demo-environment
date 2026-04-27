@@ -1,1 +1,3 @@
-vm_admin_password   = "P@ssw0rd123!2026"
+vm_admin_password = "YourComplexPassword123!"
+location          = "westeurope"
+prefix            = "rasdemo"
