@@ -75,3 +75,16 @@ The deployment includes several automated post-installation steps:
 * **Security:** The Jump Host and Gateway have Public IPs. Ensure you use strong passwords and restrict source IP ranges in the NSG rules for production-like scenarios.
 * **Costs:** This environment deploys `Standard_B2ls_v2` VMs. Be aware of the associated Azure costs.
 * **Provisioning Time:** AD Forest creation and Domain Joins require reboots; the Terraform apply might take 15-20 minutes to complete fully.
+
+### Important Parallels RAS Notes
+
+* **Connection Broker:** is not initilalized. You need to aquire a valid license or use a trial license first.
+* **Secure Gateway:** is not domain joined and is not installed (part of the demo)
+* **WTS machine:** is domain joined but nothing installed (part of the demo)
+
+### Demo Script
+
+1. Activate the Connection Broker with a license (prepaid or trial)
+2. Install Secure Gateway from RAS Console (or PowerShell)
+3. Add WTS to the farm (including Agent and RDS Role deployment)
+4. All the other stuff you want to show
