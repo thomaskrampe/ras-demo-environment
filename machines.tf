@@ -185,7 +185,7 @@ resource "azurerm_windows_virtual_machine" "subnet3_vms" {
 # ============================================
 
 # AD Installation auf PDC (mit verzögertem Neustart zur Vermeidung von Terraform Errors)
-# 🔥 Custom Script Extension: AD Forest Installation (PDC)
+# Custom Script Extension: AD Forest Installation (PDC)
 resource "azurerm_virtual_machine_extension" "domain_create_pdc" {
   name                 = "create-ad-forest"
   virtual_machine_id   = azurerm_windows_virtual_machine.pdc_vm.id
@@ -199,7 +199,7 @@ resource "azurerm_virtual_machine_extension" "domain_create_pdc" {
   })
 }
 
-# 🔥 Custom Script Extension: Domain Join für RCB
+# Custom Script Extension: Domain Join für RCB
 resource "azurerm_virtual_machine_extension" "domain_join_rcb" {
   name                 = "domain-join-rcb"
   virtual_machine_id   = azurerm_windows_virtual_machine.subnet3_vms["rcb"].id
@@ -216,7 +216,7 @@ resource "azurerm_virtual_machine_extension" "domain_join_rcb" {
   ]
 }
 
-# 🔥 Custom Script Extension: Domain Join für WTS
+# Custom Script Extension: Domain Join für WTS
 resource "azurerm_virtual_machine_extension" "domain_join_wts" {
   name                 = "domain-join-wts"
   virtual_machine_id   = azurerm_windows_virtual_machine.subnet3_vms["wts"].id
