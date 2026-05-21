@@ -442,8 +442,8 @@ resource "azurerm_virtual_machine_run_command" "post_install_rcb" {
 
           # 4. Dienst konfigurieren und prüfen
           # HINWEIS: Ansible nutzt oft den DisplayName, PowerShell Get-Service bevorzugt den internen Namen. 
-          # Wenn "RAS Connection Broker" der interne Name ist, klappt das.
-          $ServiceName = "RAS Connection Broker" 
+          # Der Service Name wird dynamisch ermittelt.
+          $ServiceName = (Get-Service | Where-Object { $_.DisplayName -like "*RAS Connection Broker*" }).Name
           Write-Output "Setze Dienst '$ServiceName' auf Automatisch und starte ihn..."
           
           Set-Service -Name $ServiceName -StartupType Automatic -ErrorAction Stop
@@ -456,8 +456,8 @@ resource "azurerm_virtual_machine_run_command" "post_install_rcb" {
               throw "Fehler: Dienst '$ServiceName' ist im Status $($Service.Status)."
           }
 
-          # 5. PowerShell Modul prüfen & importieren
-          $ModulePath = "C:\Program Files (x86)\Parallels\ApplicationServer\Modules\RASAdmin\4.0\RASAdmin.psd1"
+          # 5. PowerShell Modul dynamisch prüfen & importieren
+          $ModulePath = Get-ChildItem "C:\Program Files (x86)\Parallels\ApplicationServer\Modules\RASAdmin" -Recurse -Filter "RASAdmin.psd1" | Select-Object -First 1 -ExpandProperty FullName
           Write-Output "Importiere PowerShell Modul von '$ModulePath'..."
           
           Import-Module -Name $ModulePath -Force -ErrorAction Stop
