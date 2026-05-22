@@ -421,9 +421,30 @@ resource "azurerm_virtual_machine_run_command" "post_install_rcb" {
 
           # 2. MSI herunterladen
           # $Url = "https://download.parallels.com/ras/v20/20.2.0.25893/RASInstaller-20.2.25893.msi"
-          $url = "https://download.parallels.com/ras/v21/21.1.1.26691/RASInstaller-21.1.26691.msi"
+          $Url = "https://download.parallels.com/ras/v21/21.1.1.26691/RASInstaller-21.1.26691.msi"
           $OutPath = "C:\tmp\RASInstaller.msi"
           Write-Output "Lade Parallels RAS von $Url herunter..."
+
+          # Internetzugriff prüfen bevor der Download startet
+          Write-Output "Prüfe Internetzugriff..."
+          $maxRetries = 10
+          $retryInterval = 30
+          $internetAvailable = $false
+          for ($i = 1; $i -le $maxRetries; $i++) {
+              try {
+                  $null = Invoke-WebRequest -Uri "https://www.microsoft.com" -UseBasicParsing -TimeoutSec 10
+                  $internetAvailable = $true
+                  Write-Output "Internetzugriff verfügbar."
+                  break
+              } catch {
+                  Write-Output "Versuch $i/$maxRetries: Kein Internetzugriff. Warte $retryInterval Sekunden..."
+                  Start-Sleep -Seconds $retryInterval
+              }
+          }
+          if (-not $internetAvailable) {
+              throw "Kein Internetzugriff nach $maxRetries Versuchen. Abbruch."
+          }
+
           Invoke-WebRequest -Uri $Url -OutFile $OutPath -UseBasicParsing
 
           # 3. Installation ausführen (mit msiexec)
