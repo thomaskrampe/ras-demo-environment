@@ -416,13 +416,13 @@ resource "azurerm_virtual_machine_run_command" "post_install_rcb" {
 
       try {
           # 1. Verzeichnis erstellen (wie in Ansible)
-          Write-Output "Erstelle Verzeichnis C:\tmp..."
-          New-Item -Path "C:\tmp" -ItemType Directory -Force | Out-Null
+          Write-Output "Erstelle Verzeichnis c:\temp..."
+          New-Item -Path "C:\temp" -ItemType Directory -Force | Out-Null
 
           # 2. MSI herunterladen
           # $Url = "https://download.parallels.com/ras/v20/20.2.0.25893/RASInstaller-20.2.25893.msi"
           $Url = "https://download.parallels.com/ras/v21/21.1.1.26691/RASInstaller-21.1.26691.msi"
-          $OutPath = "C:\tmp\RASInstaller.msi"
+          $OutPath = "C:\temp\RASInstaller.msi"
           Write-Output "Lade Parallels RAS von $Url herunter..."
 
           # Internetzugriff prüfen bevor der Download startet
@@ -437,7 +437,7 @@ resource "azurerm_virtual_machine_run_command" "post_install_rcb" {
                   Write-Output "Internetzugriff verfügbar."
                   break
               } catch {
-                  Write-Output "Versuch $i/$maxRetries: Kein Internetzugriff. Warte $retryInterval Sekunden..."
+                  Write-Output "Versuch $i/$($maxRetries): Kein Internetzugriff. Warte $retryInterval Sekunden..."
                   Start-Sleep -Seconds $retryInterval
               }
           }
@@ -448,14 +448,14 @@ resource "azurerm_virtual_machine_run_command" "post_install_rcb" {
           Invoke-WebRequest -Uri $Url -OutFile $OutPath -UseBasicParsing
 
           # 3. Installation ausführen (mit msiexec)
-          $InstallArgs = "/i `"$OutPath`" ADDLOCAL=F_Controller,F_Console,F_PowerShell /l*v C:\tmp\RASinstaller.log /qn /norestart"
+          $InstallArgs = "/i `"$OutPath`" ADDLOCAL=F_Controller,F_Console,F_PowerShell /l*v C:\temp\RASinstaller.log /qn /norestart"
           Write-Output "Starte Installation..."
           
           $Process = Start-Process -FilePath "msiexec.exe" -ArgumentList $InstallArgs -Wait -PassThru -NoNewWindow
           
           # ExitCode 0 = Erfolg, 3010 = Neustart erforderlich (was bei /norestart okay ist)
           if ($Process.ExitCode -ne 0 -and $Process.ExitCode -ne 3010) {
-              throw "Installation fehlgeschlagen mit ExitCode $($Process.ExitCode). Prüfe C:\tmp\RASinstaller.log"
+              throw "Installation fehlgeschlagen mit ExitCode $($Process.ExitCode). Prüfe C:\temp\RASinstaller.log"
           }
 
           # Kurze Pause, damit der Windows Service Control Manager den neuen Dienst erkennt
