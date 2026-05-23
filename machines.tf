@@ -193,8 +193,8 @@ resource "azurerm_virtual_machine_extension" "domain_create_pdc" {
   type                 = "CustomScriptExtension"
   type_handler_version = "1.10"
   
-  settings = jsonencode({
-    # HIER KORRIGIERT: $pass statt $$pass
+  settings           = jsonencode({})
+  protected_settings = jsonencode({
     commandToExecute = "powershell -ExecutionPolicy Unrestricted -Command \"Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools; $pass = ConvertTo-SecureString '${var.vm_admin_password}' -AsPlainText -Force; Install-ADDSForest -DomainName '${local.domain_name}' -SafeModeAdministratorPassword $pass -InstallDns -Force -NoRebootOnCompletion; shutdown.exe /r /t 15\""
   })
 }
@@ -207,11 +207,12 @@ resource "azurerm_virtual_machine_extension" "domain_join_rcb" {
   type                 = "CustomScriptExtension"
   type_handler_version = "1.10"
   
-  settings = jsonencode({
+  settings           = jsonencode({})
+  protected_settings = jsonencode({
     commandToExecute = "powershell -ExecutionPolicy Unrestricted -Command \"$cred = New-Object System.Management.Automation.PSCredential('${local.domain_name}\\${local.vm_common.admin_username}', (ConvertTo-SecureString '${var.vm_admin_password}' -AsPlainText -Force)); while (!(Test-Connection -ComputerName '${local.domain_name}' -Count 1 -Quiet -ErrorAction SilentlyContinue)) { Write-Output 'Warte auf Domain...'; Start-Sleep -Seconds 15 }; Add-Computer -DomainName '${local.domain_name}' -Credential $cred -Restart -Force\""
   })
-  
-  depends_on = [    
+
+  depends_on = [
     azurerm_virtual_machine_extension.domain_create_pdc
   ]
 }
@@ -223,8 +224,9 @@ resource "azurerm_virtual_machine_extension" "domain_join_wts" {
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
   type_handler_version = "1.10"
-  
-  settings = jsonencode({
+
+  settings           = jsonencode({})
+  protected_settings = jsonencode({
     commandToExecute = "powershell -ExecutionPolicy Unrestricted -Command \"$cred = New-Object System.Management.Automation.PSCredential('${local.domain_name}\\${local.vm_common.admin_username}', (ConvertTo-SecureString '${var.vm_admin_password}' -AsPlainText -Force)); while (!(Test-Connection -ComputerName '${local.domain_name}' -Count 1 -Quiet -ErrorAction SilentlyContinue)) { Write-Output 'Warte auf Domain...'; Start-Sleep -Seconds 15 }; Add-Computer -DomainName '${local.domain_name}' -Credential $cred -Restart -Force\""
   })
   
