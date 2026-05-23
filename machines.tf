@@ -426,27 +426,27 @@ resource "azurerm_virtual_machine_run_command" "post_install_rcb" {
           $OutPath = "C:\temp\RASInstaller.msi"
           Write-Output "Lade Parallels RAS von $Url herunter..."
 
-          # Internetzugriff prüfen bevor der Download startet
-          Write-Output "Prüfe Internetzugriff..."
-          $maxRetries = 10
+          # MSI herunterladen mit Retry (WebClient streamt direkt auf Disk,
+          # Invoke-WebRequest lädt alles in den RAM - unzuverlässig bei großen Dateien)
+          $maxRetries = 5
           $retryInterval = 30
-          $internetAvailable = $false
+          $downloaded = $false
           for ($i = 1; $i -le $maxRetries; $i++) {
               try {
-                  $null = Invoke-WebRequest -Uri "https://www.microsoft.com" -UseBasicParsing -TimeoutSec 10
-                  $internetAvailable = $true
-                  Write-Output "Internetzugriff verfügbar."
+                  Write-Output "Download-Versuch $i/$($maxRetries)..."
+                  $webClient = New-Object System.Net.WebClient
+                  $webClient.DownloadFile($Url, $OutPath)
+                  $downloaded = $true
+                  Write-Output "Download erfolgreich abgeschlossen."
                   break
               } catch {
-                  Write-Output "Versuch $i/$($maxRetries): Kein Internetzugriff. Warte $retryInterval Sekunden..."
-                  Start-Sleep -Seconds $retryInterval
+                  Write-Output "Versuch $i/$($maxRetries) fehlgeschlagen: $($_.Exception.Message)"
+                  if ($i -lt $maxRetries) { Start-Sleep -Seconds $retryInterval }
               }
           }
-          if (-not $internetAvailable) {
-              throw "Kein Internetzugriff nach $maxRetries Versuchen. Abbruch."
+          if (-not $downloaded) {
+              throw "Download nach $($maxRetries) Versuchen fehlgeschlagen. Abbruch."
           }
-
-          Invoke-WebRequest -Uri $Url -OutFile $OutPath -UseBasicParsing
 
           # 3. Installation ausführen (mit msiexec)
           $InstallArgs = "/i `"$OutPath`" ADDLOCAL=F_Controller,F_Console,F_PowerShell /l*v C:\temp\RASinstaller.log /qn /norestart"
