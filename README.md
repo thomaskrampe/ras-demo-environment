@@ -56,6 +56,7 @@ The deployment includes several automated post-installation steps:
 ## Usage
 
 1. **Initialize Terraform:**
+
     ```bash
     terraform init
     ```
@@ -79,7 +80,7 @@ The deployment includes several automated post-installation steps:
 4. **Accessing the Environment:**
     * After apply, Terraform outputs RDP and HTTPS connection strings directly.
     * Connect to **`demo-jmp-01`** via RDP using its Public IP (`jump_rdp_connection` output).
-    * From the Jump Host, manage internal servers via their private IPs.
+    * From the Jump Host, manage internal servers via their private IPs (`private_ips` output).
     * The SGW is reachable at the `sgw_https_url` output once Parallels RAS is configured.
 
 ## File Structure
@@ -88,7 +89,7 @@ The deployment includes several automated post-installation steps:
 * `variables.tf`: Input variables for customization (`location`, `prefix`, `tags`, `vm_admin_username`, `vm_admin_password`, `ras_installer_url`).
 * `network.tf`: VNet (`10.100.0.0/16`), three Subnets, and Resource Group. DNS servers: `10.100.3.10` (PDC, primary) and `168.63.129.16` (Azure DNS, secondary).
 * `machines.tf`: VM definitions, NICs, NSGs, Custom Script Extensions (AD setup & domain join), and Run Command (RAS installation).
-* `outputs.tf`: Public IPs, subnet IDs, direct RDP connection string, and HTTPS URL.
+* `outputs.tf`: Public IPs, private IPs (PDC, RCB, WTS, SGW), subnet IDs, direct RDP connection string, and HTTPS URL.
 * `terraform.tfvars`: Local variable values (keep this file secure — contains the admin password).
 
 ## Azure Cost Estimation (as of May 2026)
