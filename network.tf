@@ -21,8 +21,6 @@ resource "azurerm_subnet" "jump" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.100.1.0/24"]
-  
-  depends_on = [azurerm_virtual_network.vnet]
 }
 
 # Subnet 2: Secure Gateway Network (10.100.2.0/24)
@@ -31,8 +29,6 @@ resource "azurerm_subnet" "sgw" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.100.2.0/24"]
-  
-  depends_on = [azurerm_virtual_network.vnet]
 }
 
 # Subnet 3: AD VMs (10.100.3.0/24)
@@ -41,6 +37,4 @@ resource "azurerm_subnet" "ad" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.100.3.0/24"]
-  
-  depends_on = [azurerm_virtual_network.vnet]
 }

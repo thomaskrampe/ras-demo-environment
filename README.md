@@ -86,7 +86,7 @@ The deployment includes several automated post-installation steps:
 
 * `providers.tf`: Defines required providers (AzureRM, Time) and the Azure backend for remote state.
 * `variables.tf`: Input variables for customization (`location`, `prefix`, `tags`, `vm_admin_username`, `vm_admin_password`, `ras_installer_url`).
-* `network.tf`: VNet, Subnets, and Resource Group definition.
+* `network.tf`: VNet (`10.100.0.0/16`), three Subnets, and Resource Group. DNS servers: `10.100.3.10` (PDC, primary) and `168.63.129.16` (Azure DNS, secondary).
 * `machines.tf`: VM definitions, NICs, NSGs, Custom Script Extensions (AD setup & domain join), and Run Command (RAS installation).
 * `outputs.tf`: Public IPs, subnet IDs, direct RDP connection string, and HTTPS URL.
 * `terraform.tfvars`: Local variable values (keep this file secure — contains the admin password).
