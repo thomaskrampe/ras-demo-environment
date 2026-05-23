@@ -1,4 +1,5 @@
 vm_admin_password = "P@ssw0rd123!"
 location          = "westeurope"
 prefix            = "rasdemo"
+domain_name       = "rasdemo.local"
 ras_installer_url = "https://download.parallels.com/ras/v21/21.1.1.26691/RASInstaller-21.1.26691.msi"

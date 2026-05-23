@@ -16,7 +16,8 @@ locals {
     })
   }
   
-  domain_name = "rasdemo.local"
+  domain_name = var.domain_name
+  
 }
 
 # ========================================

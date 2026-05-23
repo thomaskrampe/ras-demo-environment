@@ -10,6 +10,12 @@ variable "prefix" {
   default     = "rasdemo"
 }
 
+variable "domain_name" {
+  description = "Windows AD Domain"
+  type        = string
+  default     = "rasdemo.local"
+}
+
 variable "tags" {
   description = "Ressourcen-Tags"
   type        = map(string)

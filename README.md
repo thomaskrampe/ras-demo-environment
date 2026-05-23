@@ -27,13 +27,13 @@ All VMs use:
 * **Size:** `Standard_B2ls_v2`
 * **OS Disk:** 128 GB StandardSSD_LRS
 * **Admin username:** `adminazure` (default, configurable via `vm_admin_username`)
-* **Domain:** `rasdemo.local`
+* **Domain:** `rasdemo.local` (default, configurable via `domain_name`)
 
 ## Automation Features
 
 The deployment includes several automated post-installation steps:
 
-* **Active Directory Setup:** Automated forest creation (`rasdemo.local`) on the PDC via Custom Script Extension, followed by automated domain join for RCB and WTS. Each join waits for the domain to become reachable before proceeding.
+* **Active Directory Setup:** Automated forest creation (domain configured via `domain_name` variable, default `rasdemo.local`) on the PDC via Custom Script Extension, followed by automated domain join for RCB and WTS. Each join waits for the domain to become reachable before proceeding.
 * **Parallels RAS Installation:** After the RCB domain join and a 3-minute reboot wait, Parallels RAS (version 21.1) is downloaded and installed via `azurerm_virtual_machine_run_command`. Installed components: Connection Broker (`F_Controller`), Console (`F_Console`), and PowerShell module (`F_PowerShell`). The service is set to Automatic start and the RASAdmin PowerShell module is imported.
 * **Network Security Groups:**
   * `jmp_nsg`: Allows RDP (3389) from Internet.
@@ -88,6 +88,7 @@ The deployment includes several automated post-installation steps:
     vm_admin_password = "YourComplexPassword123!"
     location          = "westeurope"
     prefix            = "rasdemo"
+    domain_name       = "rasdemo.local"
     ras_installer_url = "https://download.parallels.com/ras/v21/21.1.1.26691/RASInstaller-21.1.26691.msi"
     ```
 
@@ -106,7 +107,7 @@ The deployment includes several automated post-installation steps:
 ## File Structure
 
 * `providers.tf`: Defines required providers (AzureRM, Time) and the Azure backend for remote state.
-* `variables.tf`: Input variables for customization (`location`, `prefix`, `tags`, `vm_admin_username`, `vm_admin_password`, `ras_installer_url`).
+* `variables.tf`: Input variables for customization (`location`, `prefix`, `domain_name`, `tags`, `vm_admin_username`, `vm_admin_password`, `ras_installer_url`).
 * `network.tf`: VNet (`10.100.0.0/16`), three Subnets, and Resource Group. DNS servers: `10.100.3.10` (PDC, primary) and `168.63.129.16` (Azure DNS, secondary).
 * `machines.tf`: VM definitions, NICs, NSGs, Custom Script Extensions (AD setup & domain join), and Run Command (RAS installation).
 * `outputs.tf`: Public IPs, private IPs (PDC, RCB, WTS, SGW), subnet IDs, direct RDP connection string, and HTTPS URL.
