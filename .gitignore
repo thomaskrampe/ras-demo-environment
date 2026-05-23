@@ -16,3 +16,5 @@ override.tf.json
 terraform.rc
 *.tfbackend
 
+# Claude Code
+.claude/settings.local.json
