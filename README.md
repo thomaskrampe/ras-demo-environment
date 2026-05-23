@@ -91,6 +91,48 @@ The deployment includes several automated post-installation steps:
 * `outputs.tf`: Public IPs, subnet IDs, direct RDP connection string, and HTTPS URL.
 * `terraform.tfvars`: Local variable values (keep this file secure — contains the admin password).
 
+## Azure Cost Estimation (as of May 2026)
+
+All prices in USD, Pay-as-you-go, Region: West Europe. Source: Azure Retail Prices API.
+
+### Price Basis
+
+| Resource | SKU | Price |
+| :--- | :--- | :--- |
+| VM (Windows) | Standard_B2ls_v2 | $0.0572/h |
+| OS Disk | StandardSSD LRS E10 (128 GiB) | $9.60/month |
+| Public IP | Standard IPv4 Static | $0.005/h |
+| VNet, Subnets, NICs, NSGs | | free |
+
+### Fixed Costs (always, even when VMs are deallocated)
+
+| Resource | Count | Unit | Per Month |
+| :--- | :---: | ---: | ---: |
+| OS Disks (128 GiB StandardSSD) | 5 | $9.60 | $48.00 |
+| Public IPs (Standard Static) | 2 | $3.65 | $7.30 |
+| **Total fixed costs** | | | **$55.30** |
+
+### Variable Costs (running VMs only)
+
+| Resource | Count | Hourly rate (total) |
+| :--- | :---: | ---: |
+| VMs (Standard_B2ls_v2 Windows) | 5 | $0.286/h |
+
+### Total Costs by Usage Scenario
+
+| Scenario | VM runtime | VM costs | Fixed costs | Total/month |
+| :--- | ---: | ---: | ---: | ---: |
+| 24/7 continuous operation | 730 h | $208.78 | $55.30 | **$264.08** |
+| Business hours (8h/day, Mon–Fri) | 173 h | $49.50 | $55.30 | **$104.80** |
+| Demo use (4h/day, 10 days/month) | 40 h | $11.44 | $55.30 | **$66.74** |
+
+### Notes
+
+* Deallocated VMs (stopped via Azure portal) incur no compute costs. Disks and Public IPs are still charged.
+* Outbound data transfer is free up to 100 GB/month, then from $0.087/GB (Zone 1).
+* Prices exclude VAT and USD/EUR exchange rate fluctuations.
+* Reserved Instances (1 year) would reduce VM costs by ~35–40%, but are unusual for a demo environment.
+
 ## Important Notes
 
 * **Security:** The Jump Host and Gateway have Public IPs. Use strong passwords and consider restricting source IP ranges in the NSG rules for production-like scenarios. The `terraform.tfvars` file contains the admin password and must not be committed to version control.
