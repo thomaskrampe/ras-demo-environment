@@ -26,7 +26,7 @@ All VMs use:
 
 * **Size:** `Standard_B2ls_v2`
 * **OS Disk:** 128 GB StandardSSD_LRS
-* **Admin username:** `adminazure`
+* **Admin username:** `adminazure` (default, configurable via `vm_admin_username`)
 * **Domain:** `rasdemo.local`
 
 ## Automation Features
@@ -85,7 +85,7 @@ The deployment includes several automated post-installation steps:
 ## File Structure
 
 * `providers.tf`: Defines required providers (AzureRM, Time) and the Azure backend for remote state.
-* `variables.tf`: Input variables for customization (`location`, `prefix`, `tags`, `vm_admin_password`, `ras_installer_url`).
+* `variables.tf`: Input variables for customization (`location`, `prefix`, `tags`, `vm_admin_username`, `vm_admin_password`, `ras_installer_url`).
 * `network.tf`: VNet, Subnets, and Resource Group definition.
 * `machines.tf`: VM definitions, NICs, NSGs, Custom Script Extensions (AD setup & domain join), and Run Command (RAS installation).
 * `outputs.tf`: Public IPs, subnet IDs, direct RDP connection string, and HTTPS URL.

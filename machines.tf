@@ -8,7 +8,7 @@ locals {
     image_offer        = "WindowsServer"
     image_sku          = "2025-datacenter-azure-edition"
     image_version      = "latest"
-    admin_username     = "adminazure"
+    admin_username     = var.vm_admin_username
     os_disk_size_gb    = 128
     vm_tags = merge(var.tags, {
       OS      = "WindowsServer2025"

@@ -20,6 +20,12 @@ variable "tags" {
   }
 }
 
+variable "vm_admin_username" {
+  description = "Admin username for all VMs"
+  type        = string
+  default     = "adminazure"
+}
+
 variable "vm_admin_password" {
   description = "Admin Password für alle VMs (mind. 12 Zeichen, komplex)"
   type        = string
