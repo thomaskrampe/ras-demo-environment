@@ -420,8 +420,7 @@ resource "azurerm_virtual_machine_run_command" "post_install_rcb" {
           New-Item -Path "C:\temp" -ItemType Directory -Force | Out-Null
 
           # 2. MSI herunterladen
-          # $Url = "https://download.parallels.com/ras/v20/20.2.0.25893/RASInstaller-20.2.25893.msi"
-          $Url = "https://download.parallels.com/ras/v21/21.1.1.26691/RASInstaller-21.1.26691.msi"
+          $Url = "${var.ras_installer_url}"
           $OutPath = "C:\temp\RASInstaller.msi"
           Write-Output "Lade Parallels RAS von $Url herunter..."
 

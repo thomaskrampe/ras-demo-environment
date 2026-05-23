@@ -25,3 +25,9 @@ variable "vm_admin_password" {
   type        = string
   sensitive   = true
 }
+
+variable "ras_installer_url" {
+  description = "Download-URL für den Parallels RAS Installer MSI. Bei einem Major-Release hier aktualisieren."
+  type        = string
+  default     = "https://download.parallels.com/ras/v21/21.1.1.26691/RASInstaller-21.1.26691.msi"
+}
