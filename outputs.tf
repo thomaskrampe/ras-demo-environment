@@ -42,3 +42,13 @@ output "sgw_https_url" {
   description = "HTTPS URL für demo-sgw-01"
   value       = "https://${azurerm_public_ip.sgw_pip.ip_address}"
 }
+
+output "private_ips" {
+  description = "Private IPs der internen VMs"
+  value = {
+    pdc = azurerm_network_interface.pdc_nic.private_ip_address
+    rcb = azurerm_network_interface.subnet3_nics["rcb"].private_ip_address
+    wts = azurerm_network_interface.subnet3_nics["wts"].private_ip_address
+    sgw = azurerm_network_interface.sgw_nic.private_ip_address
+  }
+}
