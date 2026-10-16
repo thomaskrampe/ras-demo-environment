@@ -17,44 +17,44 @@ output "subnet_ids" {
 output "public_ips" {
   description = "Öffentliche IPs der Jump Host & SGW VMs"
   value = {
-    jump_host = azurerm_public_ip.jmp_pip.ip_address
-    sgw       = azurerm_public_ip.sgw_pip.ip_address
+    jump_host = azurerm_public_ip.pip["jmp"].ip_address
+    sgw       = azurerm_public_ip.pip["sgw"].ip_address
   }
 }
 
 output "jump_host_public_ip" {
   description = "Public IP demo-jmp-01 (RDP 3389)"
-  value       = azurerm_public_ip.jmp_pip.ip_address
+  value       = azurerm_public_ip.pip["jmp"].ip_address
 }
 
 output "sgw_public_ip" {
   description = "Public IP demo-sgw-01 (HTTP 80/HTTPS 443)"
-  value       = azurerm_public_ip.sgw_pip.ip_address
+  value       = azurerm_public_ip.pip["sgw"].ip_address
 }
 
 # Bonus: RDP/HTTPS Links (kopierbar)
 output "jump_host_fqdn" {
   description = "Azure DNS FQDN für demo-jmp-01 (z.B. für Zertifikate oder RDP per Hostname)"
-  value       = azurerm_public_ip.jmp_pip.fqdn
+  value       = azurerm_public_ip.pip["jmp"].fqdn
 }
 
 output "jump_rdp_connection" {
   description = "Direkter RDP Link für demo-jmp-01"
-  value       = "mstsc /v:${azurerm_public_ip.jmp_pip.ip_address}"
+  value       = "mstsc /v:${azurerm_public_ip.pip["jmp"].ip_address}"
 }
 
 output "sgw_https_url" {
   description = "HTTPS URL für demo-sgw-01"
-  value       = "https://${azurerm_public_ip.sgw_pip.ip_address}"
+  value       = "https://${azurerm_public_ip.pip["sgw"].ip_address}"
 }
 
 output "private_ips" {
   description = "Private IPs der internen VMs"
   value = {
-    pdc = azurerm_network_interface.pdc_nic.private_ip_address
-    rcb = azurerm_network_interface.subnet3_nics["rcb"].private_ip_address
-    wts = azurerm_network_interface.subnet3_nics["wts"].private_ip_address
-    sgw = azurerm_network_interface.sgw_nic.private_ip_address
+    pdc = azurerm_network_interface.nic["pdc"].private_ip_address
+    rcb = azurerm_network_interface.nic["rcb"].private_ip_address
+    wts = azurerm_network_interface.nic["wts"].private_ip_address
+    sgw = azurerm_network_interface.nic["sgw"].private_ip_address
   }
 }
 
@@ -70,19 +70,19 @@ resource "local_file" "connection_info" {
 
 | Service   | Adresse                                                              | Protokoll |
 |-----------|----------------------------------------------------------------------|-----------|
-| Jump Host | `${azurerm_public_ip.jmp_pip.ip_address}`                            | RDP 3389  |
-| RDP Link  | `mstsc /v:${azurerm_public_ip.jmp_pip.ip_address}`                   |           |
-| Jump FQDN | `${azurerm_public_ip.jmp_pip.fqdn}`                                  |           |
-| SGW       | `https://${azurerm_public_ip.sgw_pip.ip_address}`                    | HTTPS 443 |
+| Jump Host | `${azurerm_public_ip.pip["jmp"].ip_address}`                            | RDP 3389  |
+| RDP Link  | `mstsc /v:${azurerm_public_ip.pip["jmp"].ip_address}`                   |           |
+| Jump FQDN | `${azurerm_public_ip.pip["jmp"].fqdn}`                                  |           |
+| SGW       | `https://${azurerm_public_ip.pip["sgw"].ip_address}`                    | HTTPS 443 |
 
 ## Private IPs
 
 | VM  | Private IP                                                                          |
 |-----|-------------------------------------------------------------------------------------|
-| PDC | `${azurerm_network_interface.pdc_nic.private_ip_address}`                           |
-| RCB | `${azurerm_network_interface.subnet3_nics["rcb"].private_ip_address}`               |
-| WTS | `${azurerm_network_interface.subnet3_nics["wts"].private_ip_address}`               |
-| SGW | `${azurerm_network_interface.sgw_nic.private_ip_address}`                           |
+| PDC | `${azurerm_network_interface.nic["pdc"].private_ip_address}`                           |
+| RCB | `${azurerm_network_interface.nic["rcb"].private_ip_address}`               |
+| WTS | `${azurerm_network_interface.nic["wts"].private_ip_address}`               |
+| SGW | `${azurerm_network_interface.nic["sgw"].private_ip_address}`                           |
 
 ## Credentials
 

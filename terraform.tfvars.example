@@ -1,0 +1,9 @@
+# Kopieren nach terraform.tfvars (wird per .gitignore ignoriert) und Werte anpassen.
+vm_admin_password = "ChangeMe-Complex-Password-123!"
+location          = "westeurope"
+prefix            = "rasdemo"
+domain_name       = "rasdemo.local"
+ras_installer_url = "https://download.parallels.com/ras/v21/21.1.1.26691/RASInstaller-21.1.26691.msi"
+
+# Empfohlen: RDP auf die eigene IP einschränken
+# allowed_rdp_cidrs = ["203.0.113.10/32"]

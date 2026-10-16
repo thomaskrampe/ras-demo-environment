@@ -68,3 +68,9 @@ variable "ras_installer_url" {
   type        = string
   default     = "https://download.parallels.com/ras/v21/21.1.1.26691/RASInstaller-21.1.26691.msi"
 }
+
+variable "allowed_rdp_cidrs" {
+  description = "Quell-Adressen, die per RDP auf den Jump Host dürfen (CIDR oder Service Tag). Für Betrieb auf die eigene öffentliche IP einschränken, z.B. [\"203.0.113.10/32\"]."
+  type        = list(string)
+  default     = ["Internet"]
+}
